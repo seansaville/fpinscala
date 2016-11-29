@@ -1,4 +1,4 @@
-package uk.co.seansavile.fpinscala.gettingstarted
+package uk.co.seansaville.fpinscala.gettingstarted
 
 /**
   * Exercise 4: Implement uncurrying.

@@ -59,17 +59,25 @@ object List {
     iterate(ls, Nil)
   }
 
-  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B =
-    as match {
-      case Nil         => z
-      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
-    }
+  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = as match {
+    case Nil         => z
+    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+  }
 
   /**
     * Exercise 3.9: Compute the length of a list using foldRight.
     */
   def length[A](ls: List[A]): Int = {
     foldRight(ls, 0)((_, n) => n + 1)
+  }
+
+  /**
+    * Exercise 3.10: Implement foldLeft.
+    */
+  @tailrec
+  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = as match {
+      case Nil         => z
+      case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
   }
 
 }

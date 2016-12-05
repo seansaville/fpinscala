@@ -55,8 +55,7 @@ object List {
       case Cons(h, t)   => iterate(t, Cons(h, res))
     }
 
-    //TODO: reverse this once I've written the reverse method!
-    iterate(ls, Nil)
+    reverse(iterate(ls, Nil))
   }
 
   def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = as match {
@@ -89,5 +88,11 @@ object List {
   def product(ints: List[Int]): Int = foldLeft(ints, 1)(_ * _)
 
   def length2[A](list: List[A]): Int = foldLeft(list, 0)((n, _) => n + 1)
+
+  /**
+    * Exercise 3.12: Write a function that returns the reverse of a list.
+    */
+  def reverse[A](list: List[A]): List[A] =
+    foldLeft(list, Nil.asInstanceOf[List[A]])((xs, x) => Cons(x, xs))
 
 }

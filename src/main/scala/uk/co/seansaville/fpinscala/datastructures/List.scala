@@ -80,4 +80,14 @@ object List {
     case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
   }
 
+  /**
+    * Exercise 3.11: Implement sum, product, and a function to compute the length of a list using
+    * foldLeft.
+    */
+  def sum(ints: List[Int]): Int = foldLeft(ints, 0)(_ + _)
+
+  def product(ints: List[Int]): Int = foldLeft(ints, 1)(_ * _)
+
+  def length2[A](list: List[A]): Int = foldLeft(list, 0)((n, _) => n + 1)
+
 }

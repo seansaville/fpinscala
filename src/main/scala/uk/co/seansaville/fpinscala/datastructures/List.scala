@@ -95,4 +95,10 @@ object List {
   def reverse[A](list: List[A]): List[A] =
     foldLeft(list, Nil.asInstanceOf[List[A]])((xs, x) => Cons(x, xs))
 
+  /**
+    * Exercise 3.13: Implement foldRight in terms of foldLeft.
+    */
+  def foldRight2[A, B](as: List[A], z: B)(f: (A, B) => B): B =
+    foldLeft(reverse(as), z)((b, a) => f(a, b))
+
 }

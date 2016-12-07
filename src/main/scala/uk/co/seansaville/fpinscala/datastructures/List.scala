@@ -101,4 +101,9 @@ object List {
   def foldRight2[A, B](as: List[A], z: B)(f: (A, B) => B): B =
     foldLeft(reverse(as), z)((b, a) => f(a, b))
 
+  /**
+    * Exercise 3.14: Implement append in terms of either foldLeft or foldRight.
+    */
+  def append[A](ls1: List[A], ls2: List[A]): List[A] = foldRight(ls1, ls2)(Cons(_, _))
+
 }

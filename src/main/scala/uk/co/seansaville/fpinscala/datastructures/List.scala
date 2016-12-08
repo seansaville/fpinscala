@@ -1,5 +1,8 @@
 package uk.co.seansaville.fpinscala.datastructures
 
+import com.sun.org.apache.xpath.internal.functions.FuncFalse
+import sun.font.TrueTypeFont
+
 import scala.annotation.tailrec
 
 sealed trait List[+A]
@@ -9,6 +12,8 @@ case object Nil extends List[Nothing]
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object List {
+
+  def apply[A](as: A*): List[A] = if (as.isEmpty) Nil else Cons(as.head, apply(as.tail: _*))
 
   /**
     * Exercise 3.2: Implement the function tail for removing the first element of a list.
@@ -104,6 +109,97 @@ object List {
   /**
     * Exercise 3.14: Implement append in terms of either foldLeft or foldRight.
     */
-  def append[A](ls1: List[A], ls2: List[A]): List[A] = foldRight(ls1, ls2)(Cons(_, _))
+  def append[A](ls1: List[A], ls2: List[A]): List[A] = foldRight2(ls1, ls2)(Cons(_, _))
+
+  /**
+    * Exercise 3.15: Write a function that concatenates a list of lists into a single list.
+    */
+  def concatenate[A](ls: List[List[A]]): List[A] = foldRight2(ls, Nil.asInstanceOf[List[A]])(append)
+
+  /**
+    * Exercise 3.16: Write a function that transforms a list of integers by adding 1 to each element.
+    */
+  def addOne(ints: List[Int]): List[Int] = foldRight2(ints, Nil: List[Int])((h, t) => Cons(h + 1, t))
+
+  /**
+    * Exercise 3.17: Write a function that turns each value in a list of doubles to a string.
+    */
+  def doubleToString(doubles: List[Double]): List[String] =
+    foldRight2(doubles, Nil: List[String])((h, t) => Cons(h.toString, t))
+
+  /**
+    * Exercise 3.18: Implement map.
+    */
+  def map[A, B](as: List[A])(f: A => B): List[B] =
+    foldRight2(as, Nil: List[B])((h, t) => Cons(f(h), t))
+
+  /**
+    * Exercise 3.19: Implement filter.
+    */
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
+    foldRight2(as, Nil: List[A])((h, t) => if (f(h)) Cons(h, t) else t)
+
+  /**
+    * Exercise 3.20: Implement flatMap.
+    */
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = concatenate(map(as)(f))
+
+  /**
+    * Exercise 3.21: Use flatMap to implement filter.
+    */
+  def filter2[A](as: List[A])(f: A => Boolean): List[A] =
+    flatMap(as)(a => if (f(a)) List(a) else Nil)
+
+  /**
+    * Exercise 3.22: Write a function that zips two lists by adding corresponding elements.
+    */
+  def zipSum(ls1: List[Int], ls2: List[Int]): List[Int] = {
+    @tailrec
+    def go(l: List[Int], r: List[Int], res: List[Int]): List[Int] = (l, r) match {
+      case (Nil, _)                     => res
+      case (_, Nil)                     => res
+      case (Cons(h1, t1), Cons(h2, t2)) => go(t1, t2, Cons(h1 + h2, res))
+    }
+
+    reverse(go(ls1, ls2, Nil))
+  }
+
+  /**
+    * Exercise 3.23: Implement zipWith.
+    */
+  def zipWith[A, B, C](as: List[A], bs: List[B])(f: (A, B) => C): List[C] = {
+    @tailrec
+    def go(l: List[A], r: List[B], res: List[C]): List[C] = (l, r) match {
+      case (Nil, _)                     => res
+      case (_, Nil)                     => res
+      case (Cons(h1, t1), Cons(h2, t2)) => go(t1, t2, Cons(f(h1, h2), res))
+    }
+
+    reverse(go(as, bs, Nil))
+  }
+
+  /**
+    * Exercise 3.24: Implement hasSubsequence.
+    */
+  @tailrec
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    /**
+      * Checks if a list starts with some subsequence.
+      */
+    @tailrec
+    def check(ls: List[A], seq: List[A]): Boolean = (ls, seq) match {
+      case (_, Nil)                       => true
+      case (Nil, _)                       => false
+      case (Cons(h, t), Cons(subH, subT)) => if (h == subH) check(t, subT) else false
+    }
+
+    if (check(sup, sub))
+      true
+    else
+      sup match {
+        case Nil        => sub == Nil
+        case Cons(_, t) => hasSubsequence(t, sub)
+      }
+  }
 
 }

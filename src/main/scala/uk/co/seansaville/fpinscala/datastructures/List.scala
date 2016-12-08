@@ -1,8 +1,5 @@
 package uk.co.seansaville.fpinscala.datastructures
 
-import com.sun.org.apache.xpath.internal.functions.FuncFalse
-import sun.font.TrueTypeFont
-
 import scala.annotation.tailrec
 
 sealed trait List[+A]
